@@ -40,9 +40,9 @@ docker compose up -d
 
 ## Roadmap Técnico
 
-- (x) v1.0.0-alpha (Fase 1): Deploy local com Docker Compose, PostgreSQL e Caddy Gateway.
-- () v1.1.0-beta (Fase 2): Autenticação JWT, Cloudfare Tunnel (SSL) e suporte multi-tenant no PostgreSQL.
-- () v2.0.0 (Fase 3): Migração para VPS Nuvem, suporte a Webhooks de Pagamento e Alta Disponibilidade.
+- [x] v1.0.0-alpha (Fase 1): Deploy local com Docker Compose, PostgreSQL e Caddy Gateway.
+- [ ] v1.1.0-beta (Fase 2): Autenticação JWT, Cloudfare Tunnel (SSL) e suporte multi-tenant no PostgreSQL.
+- [ ] v2.0.0 (Fase 3): Migração para VPS Nuvem, suporte a Webhooks de Pagamento e Alta Disponibilidade.
 
 ---
 
