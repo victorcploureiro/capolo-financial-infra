@@ -1,0 +1,14 @@
+# Volumes de Dados (NUNCA subir pro GitHub)
+postgres_data/
+n8n_data/
+caddy_data/
+caddy_config/
+pwa_web/
+
+# Arquivos de Variáveis de Ambiente e Senhas
+.env
+*.env
+
+# Sistema Operacional / Logs
+.DS_Store
+*.log

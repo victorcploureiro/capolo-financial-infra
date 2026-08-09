@@ -1,0 +1,18 @@
+# Gateway Local e Proxy Reverso
+:80 {
+    # Rota para o PWA (Frontend estático Lovable)
+    handle /pwa/* {
+        root * /usr/share/caddy
+        file_server
+    }
+
+    # Rota para o n8n (Orquestrador)
+    handle_path /n8n/* {
+        reverse_proxy n8n:5678
+    }
+
+    # Fallback/Home direcionando para o n8n padrão
+    handle {
+        reverse_proxy n8n:5678
+    }
+}

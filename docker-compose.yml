@@ -1,0 +1,57 @@
+services:
+  # --- GATEWAY / REVERSE PROXY ---
+  caddy:
+    image: caddy:2-alpine
+    container_name: gateway_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /mnt/dados/docker/n8n-stack/Caddyfile:/etc/caddy/Caddyfile
+      - /mnt/dados/docker/n8n-stack/caddy_data:/data
+      - /mnt/dados/docker/n8n-stack/caddy_config:/config
+      - /mnt/dados/docker/n8n-stack/pwa_web:/usr/share/caddy
+    depends_on:
+      - n8n
+
+  # --- BANCO DE DADOS RELACIONAL (MULTI-TENANT) ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - /mnt/dados/docker/n8n-stack/postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- ORQUESTRADOR DE FLUXOS ---
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n_app
+    restart: always
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_HOST=${SERVER_IP}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+    volumes:
+      - /mnt/dados/docker/n8n-stack/n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
